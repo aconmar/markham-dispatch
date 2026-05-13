@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a3a4a">
+<title>Dispatch Hub — Markham Command Center</title>
+<style>
+:root {
+  --cream:#fbf6ed;--paper:#ffffff;--ink:#1f1f23;--ink-soft:#4a4a55;
+  --navy:#1a3a4a;--navy-2:#0f2a38;--teal:#2d5a4a;
+  --gold:#c8893a;--gold-2:#a86f24;--gold-light:#f5ead6;
+  --coral:#d4684c;--coral-bg:#fbe9e3;
+  --green:#3d7a4f;--green-bg:#e6f0e9;
+  --blue:#2d4a6e;--blue-bg:#e8eef5;
+  --rule:#e6dcc8;--shadow:0 1px 2px rgba(40,30,15,0.04),0 4px 12px rgba(40,30,15,0.06);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;background:var(--cream);color:var(--ink);font-size:17px;line-height:1.55;min-height:100vh}
+.container{max-width:740px;margin:0 auto;padding:20px 18px 100px}
+.topbar{background:var(--navy);color:white;padding:16px 20px;position:sticky;top:0;z-index:50;border-bottom:3px solid var(--gold)}
+.topbar h1{margin:0;font-size:20px;font-weight:600;letter-spacing:-0.3px}
+.topbar .sub{font-size:13px;opacity:0.7;margin-top:2px}
+.card{background:var(--paper);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);border:1px solid var(--rule)}
+.card h2{margin:0 0 10px;font-size:18px;font-weight:600;color:var(--navy)}
+.card h3{margin:12px 0 6px;font-size:15px;font-weight:600;color:var(--ink-soft)}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px}
+.badge-alert{background:var(--coral-bg);color:var(--coral)}
+.badge-financial{background:var(--gold-light);color:var(--gold-2)}
+.badge-action{background:var(--blue-bg);color:var(--blue)}
+.badge-complete{background:var(--green-bg);color:var(--green)}
+.badge-update{background:#f0ebe0;color:var(--ink-soft)}
+.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.stat{flex:1;min-width:80px;background:var(--cream);border-radius:8px;padding:10px 12px;text-align:center}
+.stat .num{font-size:28px;font-weight:700;color:var(--navy);line-height:1.1}
+.stat .label{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px}
+.item{padding:10px 0;border-bottom:1px solid var(--rule)}
+.item:last-child{border-bottom:none}
+.item .time{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.item .desc{margin-top:3px;font-size:15px;line-height:1.45}
+.priority-list{list-style:none;padding:0;margin:8px 0}
+.priority-list li{padding:8px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.priority-list li:last-child{border-bottom:none}
+.priority-list .rank{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--navy);color:white;text-align:center;line-height:24px;font-size:13px;font-weight:600;margin-right:8px}
+.stale{background:var(--coral-bg);border-left:3px solid var(--coral);padding:12px 16px;border-radius:0 8px 8px 0;margin:8px 0;font-size:14px}
+.tab-row{display:flex;gap:0;margin:16px 0 0;border-bottom:2px solid var(--rule)}
+.tab{padding:10px 16px;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s}
+.tab.active{color:var(--navy);border-bottom-color:var(--gold)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:15px}
+.empty .icon{font-size:36px;margin-bottom:8px}
+.refresh{text-align:center;margin:20px 0;font-size:12px;color:var(--ink-soft)}
+.footer{text-align:center;padding:24px 0;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--rule);margin-top:24px}
+.footer a{color:var(--gold-2);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Dispatch Hub</h1>
+  <div class="sub">Markham Command Center &mdash; Universal Capture System</div>
+</div>
+
+<div class="container">
+
+  <!-- Status bar -->
+  <div class="card" id="status-card">
+    <h2>System Status</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="stat-logged">--</div><div class="label">Logged today</div></div>
+      <div class="stat"><div class="num" id="stat-completed">--</div><div class="label">Completed</div></div>
+      <div class="stat"><div class="num" id="stat-pending">--</div><div class="label">Pending</div></div>
+      <div class="stat"><div class="num" id="stat-alerts">--</div><div class="label">Alerts</div></div>
+    </div>
+    <div class="refresh">Last updated: <span id="last-update">--</span></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-row">
+    <div class="tab active" onclick="switchTab('latest')">Latest</div>
+    <div class="tab" onclick="switchTab('noon')">Noon</div>
+    <div class="tab" onclick="switchTab('evening')">Evening</div>
+    <div class="tab" onclick="switchTab('alerts')">Alerts</div>
+  </div>
+
+  <!-- Latest tab -->
+  <div class="tab-content active" id="tab-latest">
+    <div class="card">
+      <h2>Latest Activity</h2>
+      <div id="latest-items">
+        <div class="empty">
+          <div class="icon">📡</div>
+          Waiting for first Universal Sweep to run.<br>
+          Sweeps run every 2 hours from 8 AM to 10 PM.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Noon dispatch tab -->
+  <div class="tab-content" id="tab-noon">
+    <div class="card">
+      <h2>Noon Dispatch</h2>
+      <div id="noon-content">
+        <div class="empty">
+          <div class="icon">☀️</div>
+          Noon dispatch publishes at 12 PM daily.<br>
+          Check back after the first run.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evening dispatch tab -->
+  <div class="tab-content" id="tab-evening">
+    <div class="card">
+      <h2>Evening Dispatch</h2>
+      <div id="evening-content">
+        <div class="empty">
+          <div class="icon">🌙</div>
+          Evening dispatch publishes at 10 PM daily.<br>
+          Check back after the first run.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts tab -->
+  <div class="tab-content" id="tab-alerts">
+    <div class="card">
+      <h2>Recent Alerts</h2>
+      <div id="alert-items">
+        <div class="empty">
+          <div class="icon">✅</div>
+          No alerts. The system sends urgent items<br>
+          directly to iMessage in real time.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stale items (always visible) -->
+  <div class="card" id="stale-card">
+    <h2>Stale Items</h2>
+    <div class="stale">Medi-Cal appeal — OVERDUE. Filing guide ready. Alex must file in person.</div>
+    <div class="stale">3 Superhuman ECR drafts — unsent for 7+ days. Case strengthened by recent refunds.</div>
+    <div class="stale">DKIM/SPF records — not set up on GoDaddy. Affects email deliverability for rescapeventures.com.</div>
+  </div>
+
+  <div class="footer">
+    Universal Capture System v1.0 — Built 2026-05-13<br>
+    <a href="index.html">Pat's Trip Hub</a> · Dispatch Hub<br>
+    This page is updated by scheduled tasks. Content is pushed automatically.
+  </div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// The noon and evening dispatch tasks will update this page's content
+// by replacing the inner HTML of #noon-content and #evening-content
+// and adding items to #latest-items and #alert-items.
+// Stats will be updated by setting the .num elements.
+
+// Auto-set the update timestamp
+document.getElementById('last-update').textContent = new Date().toLocaleString('en-US', {
+  timeZone: 'America/Los_Angeles',
+  weekday: 'short', month: 'short', day: 'numeric',
+  hour: 'numeric', minute: '2-digit'
+});
+</script>
+
+</body></html>
