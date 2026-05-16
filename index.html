@@ -1,181 +1,567 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#1a3a4a">
-<title>Dispatch Hub — Markham Command Center</title>
+<meta http-equiv="refresh" content="300">
+<title>Markham Dispatch — Project Dashboard</title>
 <style>
 :root {
-  --cream:#fbf6ed;--paper:#ffffff;--ink:#1f1f23;--ink-soft:#4a4a55;
-  --navy:#1a3a4a;--navy-2:#0f2a38;--teal:#2d5a4a;
-  --gold:#c8893a;--gold-2:#a86f24;--gold-light:#f5ead6;
-  --coral:#d4684c;--coral-bg:#fbe9e3;
-  --green:#3d7a4f;--green-bg:#e6f0e9;
-  --blue:#2d4a6e;--blue-bg:#e8eef5;
-  --rule:#e6dcc8;--shadow:0 1px 2px rgba(40,30,15,0.04),0 4px 12px rgba(40,30,15,0.06);
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2129;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --teal: #00677F;
+  --teal-light: #00a3cc;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --red: #f85149;
+  --gray: #484f58;
+  --purple: #bc8cff;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;background:var(--cream);color:var(--ink);font-size:17px;line-height:1.55;min-height:100vh}
-.container{max-width:740px;margin:0 auto;padding:20px 18px 100px}
-.topbar{background:var(--navy);color:white;padding:16px 20px;position:sticky;top:0;z-index:50;border-bottom:3px solid var(--gold)}
-.topbar h1{margin:0;font-size:20px;font-weight:600;letter-spacing:-0.3px}
-.topbar .sub{font-size:13px;opacity:0.7;margin-top:2px}
-.card{background:var(--paper);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);border:1px solid var(--rule)}
-.card h2{margin:0 0 10px;font-size:18px;font-weight:600;color:var(--navy)}
-.card h3{margin:12px 0 6px;font-size:15px;font-weight:600;color:var(--ink-soft)}
-.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px}
-.badge-alert{background:var(--coral-bg);color:var(--coral)}
-.badge-financial{background:var(--gold-light);color:var(--gold-2)}
-.badge-action{background:var(--blue-bg);color:var(--blue)}
-.badge-complete{background:var(--green-bg);color:var(--green)}
-.badge-update{background:#f0ebe0;color:var(--ink-soft)}
-.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-.stat{flex:1;min-width:80px;background:var(--cream);border-radius:8px;padding:10px 12px;text-align:center}
-.stat .num{font-size:28px;font-weight:700;color:var(--navy);line-height:1.1}
-.stat .label{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px}
-.item{padding:10px 0;border-bottom:1px solid var(--rule)}
-.item:last-child{border-bottom:none}
-.item .time{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
-.item .desc{margin-top:3px;font-size:15px;line-height:1.45}
-.priority-list{list-style:none;padding:0;margin:8px 0}
-.priority-list li{padding:8px 0;border-bottom:1px solid var(--rule);font-size:15px}
-.priority-list li:last-child{border-bottom:none}
-.priority-list .rank{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--navy);color:white;text-align:center;line-height:24px;font-size:13px;font-weight:600;margin-right:8px}
-.stale{background:var(--coral-bg);border-left:3px solid var(--coral);padding:12px 16px;border-radius:0 8px 8px 0;margin:8px 0;font-size:14px}
-.tab-row{display:flex;gap:0;margin:16px 0 0;border-bottom:2px solid var(--rule)}
-.tab{padding:10px 16px;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s}
-.tab.active{color:var(--navy);border-bottom-color:var(--gold)}
-.tab-content{display:none}
-.tab-content.active{display:block}
-.empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:15px}
-.empty .icon{font-size:36px;margin-bottom:8px}
-.refresh{text-align:center;margin:20px 0;font-size:12px;color:var(--ink-soft)}
-.footer{text-align:center;padding:24px 0;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--rule);margin-top:24px}
-.footer a{color:var(--gold-2);text-decoration:none}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 16px;
+  padding-bottom: 80px;
+  -webkit-font-smoothing: antialiased;
+}
+h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+.subtitle { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px; }
+.timestamp { color: var(--teal-light); font-size: 0.75rem; margin-bottom: 16px; display: block; }
+
+/* Section headers */
+.section-header {
+  font-size: 1.1rem; font-weight: 600; margin: 24px 0 12px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.section-header .count {
+  background: var(--teal); color: #fff; font-size: 0.7rem;
+  padding: 2px 8px; border-radius: 10px; font-weight: 500;
+}
+
+/* Project cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-left: 3px solid var(--gray);
+}
+.card.active { border-left-color: var(--green); }
+.card.stalled { border-left-color: var(--yellow); }
+.card.blocked { border-left-color: var(--red); }
+.card.dormant { border-left-color: var(--gray); }
+
+.card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 8px;
+}
+.card-title { font-weight: 600; font-size: 0.95rem; }
+.badge {
+  font-size: 0.65rem; font-weight: 600; padding: 2px 8px;
+  border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.badge-active { background: rgba(63,185,80,0.15); color: var(--green); }
+.badge-stalled { background: rgba(210,153,34,0.15); color: var(--yellow); }
+.badge-blocked { background: rgba(248,81,73,0.15); color: var(--red); }
+.badge-dormant { background: rgba(72,79,88,0.2); color: var(--text-dim); }
+
+.card-meta { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 6px; }
+.card-next { font-size: 0.82rem; margin-bottom: 6px; }
+.card-next strong { color: var(--teal-light); }
+.card-owner { font-size: 0.75rem; color: var(--text-dim); }
+.card-owner span { color: var(--purple); }
+.card-deliverables { font-size: 0.75rem; margin-top: 6px; color: var(--text-dim); }
+.card-deliverables a { color: var(--teal-light); text-decoration: none; }
+
+/* System status */
+.sys-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 16px;
+}
+.sys-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px;
+}
+.sys-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.sys-value { font-size: 0.9rem; font-weight: 600; }
+.sys-value.ok { color: var(--green); }
+.sys-value.warn { color: var(--yellow); }
+.sys-value.err { color: var(--red); }
+.sys-detail { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+
+/* Task list */
+.task-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+  margin-bottom: 6px; font-size: 0.82rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.task-row .task-name { flex: 1; }
+.task-row .task-schedule { color: var(--text-dim); font-size: 0.72rem; text-align: right; }
+.enabled-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+.enabled-dot.on { background: var(--green); }
+.enabled-dot.off { background: var(--red); }
+
+/* Deliverables */
+.deliv-row {
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.deliv-row:last-child { border-bottom: none; }
+.deliv-date { color: var(--text-dim); font-size: 0.72rem; }
+
+/* Quick stats bar */
+.stats-bar {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.stat {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px; flex: 1; min-width: 80px; text-align: center;
+}
+.stat-num { font-size: 1.4rem; font-weight: 700; color: var(--teal-light); }
+.stat-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
+
+/* Collapsible */
+.collapse-toggle {
+  cursor: pointer; user-select: none;
+}
+.collapse-content { display: none; }
+.collapse-content.show { display: block; }
+
+/* Filter tabs */
+.filter-bar { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.filter-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-dim); font-size: 0.72rem; padding: 4px 12px;
+  border-radius: 16px; cursor: pointer; transition: all 0.2s;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: var(--teal); color: #fff; border-color: var(--teal);
+}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <h1>Dispatch Hub</h1>
-  <div class="sub">Markham Command Center &mdash; Universal Capture System</div>
+<h1>Markham Dispatch</h1>
+<div class="subtitle">Project Command Center</div>
+<span class="timestamp" id="ts"></span>
+
+<!-- Quick Stats -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">16</div><div class="stat-label">Projects</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--green)">7</div><div class="stat-label">Active</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--yellow)">3</div><div class="stat-label">Stalled</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--red)">1</div><div class="stat-label">Blocked</div></div>
 </div>
 
-<div class="container">
+<!-- Filter -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterCards('all')">All</button>
+  <button class="filter-btn" onclick="filterCards('active')">Active</button>
+  <button class="filter-btn" onclick="filterCards('stalled')">Stalled</button>
+  <button class="filter-btn" onclick="filterCards('blocked')">Blocked</button>
+  <button class="filter-btn" onclick="filterCards('dormant')">Dormant</button>
+</div>
 
-  <!-- Status bar -->
-  <div class="card" id="status-card">
-    <h2>System Status</h2>
-    <div class="stat-row">
-      <div class="stat"><div class="num" id="stat-logged">--</div><div class="label">Logged today</div></div>
-      <div class="stat"><div class="num" id="stat-completed">--</div><div class="label">Completed</div></div>
-      <div class="stat"><div class="num" id="stat-pending">--</div><div class="label">Pending</div></div>
-      <div class="stat"><div class="num" id="stat-alerts">--</div><div class="label">Alerts</div></div>
-    </div>
-    <div class="refresh">Last updated: <span id="last-update">--</span></div>
+<!-- Projects Section -->
+<div class="section-header">Projects <span class="count">16</span></div>
+<div id="projects">
+
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">🏗️ Cowork OS / System Architecture</div>
+    <span class="badge badge-active">Active</span>
   </div>
+  <div class="card-meta">Last activity: May 15, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Build & deploy project dashboard to GitHub Pages</div>
+  <div class="card-owner">Owner: <span>Claude</span></div>
+  <div class="card-deliverables">15 scheduled tasks running • Memory system active • Dispatch pipeline live</div>
+</div>
 
-  <!-- Tabs -->
-  <div class="tab-row">
-    <div class="tab active" onclick="switchTab('latest')">Latest</div>
-    <div class="tab" onclick="switchTab('noon')">Noon</div>
-    <div class="tab" onclick="switchTab('evening')">Evening</div>
-    <div class="tab" onclick="switchTab('alerts')">Alerts</div>
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">✈️ Pat Trip Concierge (Africa/UK)</div>
+    <span class="badge badge-active">Active</span>
   </div>
+  <div class="card-meta">Last activity: May 15, 2026 • <strong>44 days to departure</strong></div>
+  <div class="card-next"><strong>Next:</strong> Colorado Springs research delivered; hotel booking & Kruger logistics pending</div>
+  <div class="card-owner">Owner: <span>Claude + Pat</span></div>
+  <div class="card-deliverables">Flights booked ($19,268) • IMG insurance enrolled • <a href="https://aconmar.github.io/pat-trip-hub/">Trip Hub live</a></div>
+</div>
 
-  <!-- Latest tab -->
-  <div class="tab-content active" id="tab-latest">
-    <div class="card">
-      <h2>Latest Activity</h2>
-      <div id="latest-items">
-        <div class="empty">
-          <div class="icon">📡</div>
-          Waiting for first Universal Sweep to run.<br>
-          Sweeps run every 2 hours from 8 AM to 10 PM.
-        </div>
-      </div>
-    </div>
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">🏥 Health Hub</div>
+    <span class="badge badge-active">Active</span>
   </div>
+  <div class="card-meta">Last activity: May 14, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Zepbound refill tracking; health app data consolidation</div>
+  <div class="card-owner">Owner: <span>Claude</span></div>
+  <div class="card-deliverables">Medical records organized • Rx tracking active</div>
+</div>
 
-  <!-- Noon dispatch tab -->
-  <div class="tab-content" id="tab-noon">
-    <div class="card">
-      <h2>Noon Dispatch</h2>
-      <div id="noon-content">
-        <div class="empty">
-          <div class="icon">☀️</div>
-          Noon dispatch publishes at 12 PM daily.<br>
-          Check back after the first run.
-        </div>
-      </div>
-    </div>
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">📦 Amazon Returns</div>
+    <span class="badge badge-active">Active</span>
   </div>
+  <div class="card-meta">Last activity: May 15, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Mon/Thu automated sweep checking refund status</div>
+  <div class="card-owner">Owner: <span>Claude (autopilot)</span></div>
+  <div class="card-deliverables">Returns tracker maintained • Sweep runs Mon/Thu 11:30 AM</div>
+</div>
 
-  <!-- Evening dispatch tab -->
-  <div class="tab-content" id="tab-evening">
-    <div class="card">
-      <h2>Evening Dispatch</h2>
-      <div id="evening-content">
-        <div class="empty">
-          <div class="icon">🌙</div>
-          Evening dispatch publishes at 10 PM daily.<br>
-          Check back after the first run.
-        </div>
-      </div>
-    </div>
+<div class="card blocked" data-status="blocked">
+  <div class="card-header">
+    <div class="card-title">⛑️ Medi-Cal Appeal</div>
+    <span class="badge badge-blocked">Blocked</span>
   </div>
+  <div class="card-meta">Last activity: May 10, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Waiting on appeal response from Medi-Cal</div>
+  <div class="card-owner">Owner: <span>Blocked on Medi-Cal</span></div>
+  <div class="card-deliverables">Appeal filed • Documentation complete</div>
+</div>
 
-  <!-- Alerts tab -->
-  <div class="tab-content" id="tab-alerts">
-    <div class="card">
-      <h2>Recent Alerts</h2>
-      <div id="alert-items">
-        <div class="empty">
-          <div class="icon">✅</div>
-          No alerts. The system sends urgent items<br>
-          directly to iMessage in real time.
-        </div>
-      </div>
-    </div>
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">🚀 Rescape Ventures</div>
+    <span class="badge badge-active">Active</span>
   </div>
+  <div class="card-meta">Last activity: May 13, 2026</div>
+  <div class="card-next"><strong>Next:</strong> LLC formation, C-27 filing, brand identity development</div>
+  <div class="card-owner">Owner: <span>Alex</span></div>
+  <div class="card-deliverables">Domain candidates selected • Branding in progress</div>
+</div>
 
-  <!-- Stale items (always visible) -->
-  <div class="card" id="stale-card">
-    <h2>Stale Items</h2>
-    <div class="stale">Medi-Cal appeal — OVERDUE. Filing guide ready. Alex must file in person.</div>
-    <div class="stale">3 Superhuman ECR drafts — unsent for 7+ days. Case strengthened by recent refunds.</div>
-    <div class="stale">DKIM/SPF records — not set up on GoDaddy. Affects email deliverability for rescapeventures.com.</div>
+<div class="card stalled" data-status="stalled">
+  <div class="card-header">
+    <div class="card-title">🌵 Project Bianco</div>
+    <span class="badge badge-stalled">Stalled</span>
   </div>
+  <div class="card-meta">Last activity: May 6, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Landscape design review; plant procurement list pending Alex</div>
+  <div class="card-owner">Owner: <span>Alex</span></div>
+  <div class="card-deliverables">Plant list drafted • Landscape plan in progress</div>
+</div>
 
-  <div class="footer">
-    Universal Capture System v1.0 — Built 2026-05-13<br>
-    <a href="index.html">Pat's Trip Hub</a> · Dispatch Hub<br>
-    This page is updated by scheduled tasks. Content is pushed automatically.
+<div class="card stalled" data-status="stalled">
+  <div class="card-header">
+    <div class="card-title">📱 LDOS App</div>
+    <span class="badge badge-stalled">Stalled</span>
   </div>
+  <div class="card-meta">Last activity: May 3, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Awaiting Alex's review of prototype</div>
+  <div class="card-owner">Owner: <span>Alex</span></div>
+  <div class="card-deliverables">Prototype built • Waiting for feedback</div>
+</div>
 
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">📧 Email Consolidation</div>
+    <span class="badge badge-active">Active</span>
+  </div>
+  <div class="card-meta">Last activity: May 15, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Ongoing inbox sweep and triage (automated hourly)</div>
+  <div class="card-owner">Owner: <span>Claude (autopilot)</span></div>
+  <div class="card-deliverables">Inbox sweep hourly • Downloads triage daily 1 PM</div>
+</div>
+
+<div class="card dormant" data-status="dormant">
+  <div class="card-header">
+    <div class="card-title">🧹 Digital Declutter</div>
+    <span class="badge badge-dormant">Dormant</span>
+  </div>
+  <div class="card-meta">Last activity: May 1, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Weekly Desktop/Downloads age check (Sunday sweep)</div>
+  <div class="card-owner">Owner: <span>Claude (scheduled)</span></div>
+  <div class="card-deliverables">Sunday weekly sweep active</div>
+</div>
+
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">🔄 Cancel/Refund Tracker</div>
+    <span class="badge badge-active">Active</span>
+  </div>
+  <div class="card-meta">Last activity: May 13, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Oura refund request sent; tracking outstanding refunds</div>
+  <div class="card-owner">Owner: <span>Claude</span></div>
+  <div class="card-deliverables">Oura refund drafted • Nike/Lulu/REI returns tracked</div>
+</div>
+
+<div class="card stalled" data-status="stalled">
+  <div class="card-header">
+    <div class="card-title">💊 CR Prescription Project</div>
+    <span class="badge badge-stalled">Stalled</span>
+  </div>
+  <div class="card-meta">Last activity: May 5, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Awaiting pharmacy confirmation</div>
+  <div class="card-owner">Owner: <span>Alex</span></div>
+  <div class="card-deliverables">Research complete • Waiting on action</div>
+</div>
+
+<div class="card dormant" data-status="dormant">
+  <div class="card-header">
+    <div class="card-title">💊 Natalia Rx Travel</div>
+    <span class="badge badge-dormant">Dormant</span>
+  </div>
+  <div class="card-meta">Last activity: Apr 28, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Revisit closer to travel date</div>
+  <div class="card-owner">Owner: <span>Alex</span></div>
+  <div class="card-deliverables">Research compiled</div>
+</div>
+
+<div class="card dormant" data-status="dormant">
+  <div class="card-header">
+    <div class="card-title">👕 Clothing Returns</div>
+    <span class="badge badge-dormant">Dormant</span>
+  </div>
+  <div class="card-meta">Last activity: May 2, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Check return window deadlines</div>
+  <div class="card-owner">Owner: <span>Alex</span></div>
+  <div class="card-deliverables">Nike/Lulu/REI items identified</div>
+</div>
+
+<div class="card dormant" data-status="dormant">
+  <div class="card-header">
+    <div class="card-title">💰 Financial Management</div>
+    <span class="badge badge-dormant">Dormant</span>
+  </div>
+  <div class="card-meta">Last activity: May 1, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Monarch Money review; Chase account reconciliation</div>
+  <div class="card-owner">Owner: <span>Alex</span></div>
+  <div class="card-deliverables">Accounts identified</div>
+</div>
+
+<div class="card active" data-status="active">
+  <div class="card-header">
+    <div class="card-title">🏔️ Pat Colorado Springs Trip</div>
+    <span class="badge badge-active">Active</span>
+  </div>
+  <div class="card-meta">Last activity: May 15, 2026</div>
+  <div class="card-next"><strong>Next:</strong> Research delivered; iMessage draft ready for Pat</div>
+  <div class="card-owner">Owner: <span>Claude</span></div>
+  <div class="card-deliverables">Research PDF delivered • iMessage draft ready</div>
+</div>
+
+</div><!-- /projects -->
+
+<!-- System Status -->
+<div class="section-header collapse-toggle" onclick="toggleSection('sys')">⚙️ System Status <span class="count">▼</span></div>
+<div class="collapse-content show" id="sys">
+
+<div class="sys-grid">
+  <div class="sys-card">
+    <div class="sys-label">Scheduled Tasks</div>
+    <div class="sys-value ok">11 Active</div>
+    <div class="sys-detail">4 retired/disabled</div>
+  </div>
+  <div class="sys-card">
+    <div class="sys-label">Universal Sweep</div>
+    <div class="sys-value ok">Running</div>
+    <div class="sys-detail">Every 2h, 11AM–9PM</div>
+  </div>
+  <div class="sys-card">
+    <div class="sys-label">Noon Dispatch</div>
+    <div class="sys-value ok">Active</div>
+    <div class="sys-detail">Last: May 15 12:02 PM</div>
+  </div>
+  <div class="sys-card">
+    <div class="sys-label">Evening Dispatch</div>
+    <div class="sys-value ok">Active</div>
+    <div class="sys-detail">Last: May 14 10:01 PM</div>
+  </div>
+  <div class="sys-card">
+    <div class="sys-label">Inbox Sweep</div>
+    <div class="sys-value ok">Hourly</div>
+    <div class="sys-detail">11AM–11PM daily</div>
+  </div>
+  <div class="sys-card">
+    <div class="sys-label">Stale Alerter</div>
+    <div class="sys-value ok">Active</div>
+    <div class="sys-detail">Daily 11:30 AM</div>
+  </div>
+</div>
+
+<div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:8px; font-weight:600;">All Scheduled Tasks</div>
+
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Universal Sweep</div>
+  <div class="task-schedule">Every 2h 11AM–9PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Noon Dispatch</div>
+  <div class="task-schedule">Daily 12:02 PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Evening Dispatch</div>
+  <div class="task-schedule">Daily 10:01 PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Inbox Sweep</div>
+  <div class="task-schedule">Hourly 11AM–11PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Inbox Archive</div>
+  <div class="task-schedule">Daily 11:04 PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Concierge Morning</div>
+  <div class="task-schedule">Daily 12:09 PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Downloads Triage</div>
+  <div class="task-schedule">Daily 1:09 PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Amazon Returns</div>
+  <div class="task-schedule">Mon/Thu 11:36 AM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Autonomous Work</div>
+  <div class="task-schedule">2x daily 11:30AM/2PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Daily Intake</div>
+  <div class="task-schedule">Daily 9:01 PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Stale Item Alerter</div>
+  <div class="task-schedule">Daily 11:32 AM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot on"></span>Sunday Weekly</div>
+  <div class="task-schedule">Sunday 12:01 PM</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot off"></span><span style="color:var(--text-dim)">Weekly Session Summary</span></div>
+  <div class="task-schedule" style="color:var(--red)">Retired</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot off"></span><span style="color:var(--text-dim)">Concierge Afternoon</span></div>
+  <div class="task-schedule" style="color:var(--red)">Retired</div>
+</div>
+<div class="task-row">
+  <div class="task-name"><span class="enabled-dot off"></span><span style="color:var(--text-dim)">Pat iMessage Monitor</span></div>
+  <div class="task-schedule" style="color:var(--red)">Retired</div>
+</div>
+
+</div>
+
+<!-- Recent Deliverables -->
+<div class="section-header collapse-toggle" onclick="toggleSection('deliv')">📦 Recent Deliverables <span class="count">▼</span></div>
+<div class="collapse-content show" id="deliv">
+
+<div class="deliv-row">
+  <div>🏔️ Pat Colorado Springs research + iMessage draft</div>
+  <div class="deliv-date">May 15, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>✉️ Pat iMessage draft — trip action items</div>
+  <div class="deliv-date">May 14, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>✅ Pat booking verification (PDF + MD)</div>
+  <div class="deliv-date">May 13, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>💊 Oura refund request letter (PDF)</div>
+  <div class="deliv-date">May 13, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>📄 Pat one-page booking sheet (PDF)</div>
+  <div class="deliv-date">May 12, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>✈️ Pat fare tier recommendation</div>
+  <div class="deliv-date">May 11, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>🏗️ Dispatch v6 — master cleanup + continuity rebuild</div>
+  <div class="deliv-date">May 8, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>📊 Noon dispatch published to GitHub Pages</div>
+  <div class="deliv-date">May 13, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>🛡️ IMG iTravelInsured SE plan document</div>
+  <div class="deliv-date">May 7, 2026</div>
+</div>
+<div class="deliv-row">
+  <div>🏗️ Dispatch v5 — full overhaul per Pat's voice memos</div>
+  <div class="deliv-date">May 1, 2026</div>
+</div>
+
+</div>
+
+<!-- Priority Actions -->
+<div class="section-header">🎯 Priority Actions This Week</div>
+
+<div class="card" style="border-left-color: var(--red);">
+  <div class="card-title" style="font-size:0.85rem;">🔴 Mmilo balance due — ZAR 44,606</div>
+  <div class="card-meta">Deadline: May 21, 2026 • Owner: Pat</div>
+</div>
+<div class="card" style="border-left-color: var(--yellow);">
+  <div class="card-title" style="font-size:0.85rem;">🟡 Hotel booking for Pat — Africa/UK segments</div>
+  <div class="card-meta">Pat requested help May 4 • Owner: Claude + Alex</div>
+</div>
+<div class="card" style="border-left-color: var(--yellow);">
+  <div class="card-title" style="font-size:0.85rem;">🟡 Newark Marriott day room — book this week</div>
+  <div class="card-meta">Fri Jul 17 layover • Owner: Claude</div>
+</div>
+<div class="card" style="border-left-color: var(--yellow);">
+  <div class="card-title" style="font-size:0.85rem;">🟡 Zambia KAZA UniVisa — draft instructions for Pat</div>
+  <div class="card-meta">Apply by May 28 • Owner: Claude</div>
+</div>
+<div class="card" style="border-left-color: var(--teal);">
+  <div class="card-title" style="font-size:0.85rem;">🔵 Deploy this dashboard + auto-refresh pipeline</div>
+  <div class="card-meta">Today • Owner: Claude</div>
+</div>
+
+<div style="margin-top:40px; padding-top:16px; border-top:1px solid var(--border); text-align:center;">
+  <div style="font-size:0.7rem; color:var(--text-dim);">
+    Markham Dispatch v1.0 • Auto-refreshes every 5 min<br>
+    Built by Claude for Alex Markham
+  </div>
 </div>
 
 <script>
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+// Timestamp
+document.getElementById('ts').textContent = 'Dashboard generated: ' + new Date().toLocaleString('en-US', {
+  weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
+  hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+});
+
+// Filter
+function filterCards(status) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('#projects .card').forEach(c => {
+    if (status === 'all' || c.dataset.status === status) {
+      c.style.display = 'block';
+    } else {
+      c.style.display = 'none';
+    }
+  });
 }
 
-// The noon and evening dispatch tasks will update this page's content
-// by replacing the inner HTML of #noon-content and #evening-content
-// and adding items to #latest-items and #alert-items.
-// Stats will be updated by setting the .num elements.
-
-// Auto-set the update timestamp
-document.getElementById('last-update').textContent = new Date().toLocaleString('en-US', {
-  timeZone: 'America/Los_Angeles',
-  weekday: 'short', month: 'short', day: 'numeric',
-  hour: 'numeric', minute: '2-digit'
-});
+// Collapse
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('show');
+}
 </script>
 
-</body></html>
+</body>
+</html>
